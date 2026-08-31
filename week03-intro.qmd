@@ -107,29 +107,44 @@ mtcars %>%
 
 Start by exploring the data below. It's always good to ensure you understand what is contained in your dataset.
 
-```{r, message = FALSE}
+```{r load-data, message = FALSE}
 data(mtcars) # reads in the data & adds it to your environment as a dataframe
 mtcars
 
+mtcars <- mtcars |> 
+  rownames_to_column("model")
+
+view(mtcars)
+head(mtcars)#preview dataframe 
+summary(mtcars)
+?mtcars
+
+tail(mtcars)
 ```
 
 - 
 
   ## How many rows and columns are in the dataframe?
 
-- 
+- 32 rows, 12 columns
 
   ## What are the variables you see?
 
-- 
+- mpg, cylinder, horse power, gear, weight
 
   ## How might you view the last few rows of the dataframe with a single function?
+
+  tail()
 
 ### Quick Questions
 
 - What is the average `mpg` overall?
 
 ```{r, warning=FALSE}
+mean(mtcars)#wrong
+mean(mpg)#wrong
+
+mean(mtcars$mpg) #$ lets you select variable column
 
 
 ```
@@ -138,12 +153,15 @@ mtcars
 
 ```{r, warning=FALSE}
 
+mean(mtcars$hp)
+
 
 ```
 
 - Can you find the median?
 
 ```{r, warning=FALSE}
+median(mtcars$hp)
 
 
 ```
@@ -154,7 +172,8 @@ Make a scatter plot of `mtcars` with `weight` on the x-axis and `mpg` on the y-a
 
 ```{r, warning=FALSE}
 # this is a scatterplot of mpg by wt
-
+ggplot(data = mtcars, aes(x=wt, y=mpg)) +
+  geom_point()
 
 ```
 
@@ -165,6 +184,23 @@ Create a scatter plot and histogram of two variables of your choice (try to make
 Try beautifying your plots using what you have learned so far.
 
 ```{r, warning=FALSE}
+#Scatter Plot
+ggplot(data = mtcars, aes(x=hp, y=qsec)) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "black") +
+  theme_light() +
+  labs(title = "Quarter Mile Time vs Horse Power",
+       x = "Horse Power",
+       y = "Time in Sec") 
+
+
+#Histogram
+ggplot(data = mtcars, aes(x=hp)) +
+  geom_histogram() +
+  theme_light() +
+  labs( title = "Horse Power",
+        x="HP",
+        y="Car Count")
 
 
 ```
