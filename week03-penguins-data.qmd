@@ -190,6 +190,17 @@ The magic of `ggplot2` is simplicity and *customization* so let's customize, bas
 ![](https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png){fig-align="center" width="50%"}
 
 ```{r, message=FALSE, warning=FALSE}
+#manual colors 
+ggplot(data = penguins_data, aes(x = flipper_length_mm, fill= species))+ 
+  geom_histogram(alpha= 0.75) + #alpha chnages transparency
+  scale_fill_manual(values = c("darkorange", "darkorchid", "cyan4"), name= "Species") +
+  theme_bw()+ #chaning background
+  labs(title = "Penguins Fllipper Length",
+       subtitle = "3 Species Observed on Three Islands in the Palmer Archipelago",
+       x = "Flipper length",
+       y = "Number of Penguins")
+
+
 
 
 
@@ -199,13 +210,25 @@ Manually choosing colors is cool, but there are also color palettes available fo
 
 ```{r, message=FALSE}
 
-
+ggplot(data = penguins_data, aes(x = flipper_length_mm, fill= species))+ 
+  geom_histogram(alpha= 0.99) + #alpha chnages transparency
+  scale_fill_viridis_d(option = "magma", name = "Species") +
+  theme_bw()+ 
+  labs(title = "Penguins Fllipper Length",
+       subtitle = "3 Species Observed on Three Islands in the Palmer Archipelago",
+       x = "Flipper length",
+       y = "Number of Penguins")
 
 ```
 
 Let's investigate flipper length with another type of data viz: a box plot!
 
 ```{r, message=FALSE}
+
+ggplot(data = penguins_data, aes(y = flipper_length_mm, fill= species))+ 
+  geom_boxplot()
+
+
 
 
 
@@ -215,6 +238,22 @@ Again, let's customize! Add points for individual penguins.
 
 ```{r, message=FALSE}
 
+ggplot(data = penguins_data, aes(x = species, y = flipper_length_mm, fill= species))+ 
+  geom_boxplot() +
+  geom_jitter(size = 0.5) +
+  theme_bw() +
+  scale_fill_manual(values = c("darkorange", "darkorchid", "cyan4"), name= "Species") +
+  labs(title = "Penguins Fllipper Length",
+       subtitle = "3 Species Observed on Three Islands in the Palmer Archipelago",
+       x = "Flipper length",
+       y = "Number of Penguins") +
+  theme(axis.text = element_text(angle = 45, hjust = 1, vjust = 1), legend.position = "none" ) +
+  coord_flip()
+
+
+
+
+
 
 
 ```
@@ -223,6 +262,12 @@ Awesome! Let's take a look at flipper length and it's relationship to body mass
 
 ```{r, message=FALSE}
 
+ggplot(data = penguins_data, aes(x = flipper_length_mm, y = body_mass_g, color= species, shape = island))+ 
+  geom_point() +
+  scale_shape_manual(values = c(1,4,13))
+
+
+
 
 
 ```
@@ -230,7 +275,7 @@ Awesome! Let's take a look at flipper length and it's relationship to body mass
 Cool! Let's add species to this plot. What about island?
 
 ```{r, message=FALSE}
-
+####see above 
 
   
 ```
@@ -243,7 +288,15 @@ Cool! Let's add species to this plot. What about island?
 
 ```{r, message=FALSE, warning=FALSE}
 
-
+plotname <- ggplot(data = penguins_data, aes(x = culmen_depth_mm, fill= species))+ 
+  geom_histogram(alpha= 0.99) + #alpha chnages transparency
+  scale_fill_viridis_d(option = "magma", name = "Species") +
+  theme_bw()+ 
+  labs(title = "Penguins Culmen Depth in MM",
+       subtitle = "3 Species Observed on Three Islands in the Palmer Archipelago",
+       x = "Culmen Depth",
+       y = "Number of Penguins")
+ggplotly(plotname)
 
 ```
 
@@ -253,7 +306,17 @@ Cool! Let's add species to this plot. What about island?
 
 ```{r, message=FALSE, warning=FALSE}
 
+ggplot(data = penguins_data, aes(x = culmen_depth_mm, y = body_mass_g, color= species, name = "Species"))+ 
+  geom_point() +
+  scale_color_viridis_d("mako") +
+  labs(title = "Culmen Depth Compared To Body Mass",
+       subtitle = "3 Species Observed on Three Islands in the Palmer Archipelago",
+       x = "Culmen Depth",
+       y = "Body Mass") +
+  theme_bw()
 
+
+ 
 
 ```
 
