@@ -1,0 +1,199 @@
+---
+title: "Assignment 4: Exploratory Data Analysis"
+author: "Brady Paulson"
+date: "9/25/26`"
+format: html
+editor: visual
+---
+
+## Overview
+
+Due: **Friday 9/25 11:59pm**
+
+In this assignment, you will practice Exploratory Data Analysis (EDA) by making plots from a **Kaggle dataset of your choice**.
+
+You will submit **at least 4 different plot types**, with short written interpretations for each.
+
+Part 1 is worth a total of 1 point, and Part 2 is worth 4 points (1 point for each plot, question, and interpretation).
+
+## Part 1: Get Your Data
+
+1.  Go to [Kaggle Datasets](https://www.kaggle.com/datasets), create an account, and choose a dataset that interests you. Ensure your data has:
+    1.  At least 4 variables
+    2.  At least one categorical and one continuous variable
+    3.  I recommend data that contains at least 50-100 observations
+    4.  Tip: Open the CSV on Kaggle first and skim the columns to check that it meets these requirements
+2.  Download the dataset as a CSV file.
+3.  Place the CSV in your class R project `data` folder.
+4.  Read it into R with `read_csv()`.
+
+```{r, message=FALSE}
+library(tidyverse)
+
+mydata <- read_csv("data/Teams.csv")
+
+
+mydata <- read_csv("data/Teams.csv")
+data_2024 <- mydata |> 
+  filter(yearID == 2024)
+
+mydata <- read_csv("data/Teams.csv")
+data_red_sox <- mydata |> 
+  filter(teamID == "BOS")
+
+```
+
+### Describe your data
+
+Data author:
+
+Link:
+
+Description: This is a record of teams in 2024 and their overall statistics.
+
+### Preview your data
+
+Use some of the strategies you've learned in this class or picked up elsewhere to summarize and quickly explore your data.
+
+```{r}
+dim(data_2024)
+summary(data_2024)
+
+```
+
+### Summary stats
+
+Before you make plots, you must also:
+
+- Show basic summaries of your dataset, including:
+
+  - `count()` for categorical variables (to see category frequencies)
+
+  - `mean()`, `median()`, `sd()`, `min()`, `max()` for at least one numeric variable
+
+  - Remember to use `na.rm = TRUE` if you have missing values that affect summaries!
+
+```{r}
+
+count(mydata, yearID, teamID, franchID)
+##There are no missing values in the W column
+data_2024 |> 
+  summarise(
+    n      = n(),
+    mean   = mean(W),
+    median = median(W),
+    sd     = sd(W),
+    iqr    = IQR(W),
+    min    = min(W),
+    max    = max(W))
+
+```
+
+Write 2–3 sentences here: What do the category counts tell you? What does the numeric summary show about spread, center, or outliers?
+
+In this data set the count shows me the amount of entries for each team in the categories. Since there is one entry every year for each team, it shows that the count is only 1. The numeric numbers show that there is a large spread in the amount of Wins that different teams get each year.
+
+## Part 2: Visualize Your Data
+
+Create **at least 4 plots**, each of a different type. Your plots may share variables, but each one should answer a **different question** about your data. At least one plot must include a variable that isn't in the others.
+
+Each plot should have:
+
+- A title and labeled axes
+
+- A short interpretation (2-3 sentences) underneath
+
+  - Sample interpretation: (boxplot of `price` by `cut` from `diamonds` data): *Ideal diamonds have the lowest median price, which is surprising since Ideal is the best cut. Every cut also has a lot of very expensive outliers. One possible reason for the low Ideal prices is that Ideal diamonds might be smaller on average, which I could check by plotting carat by cut.*
+
+Use the EDA Part 3 notes as your reference. Since this is an EDA assignment, your plots can look plain, but consider adding colors, themes, or interactivity for interpretability and visual appeal if you know how.
+
+### Plot 1
+
+```{r}
+# insert code here
+ggplot(data_2024, aes (x = W)) +
+  geom_bar() +
+  labs(title = "Amount of Teams With the Same Total Wins", y = "Number of Teams", x= "WIns")
+```
+
+Question this plot answers: How may teams win the same amount of games?
+
+Interpretation: The y axis shows the count of teams that win the same amount of games. The max number of teams that wins the same amount of games is 3, while many teams win a completely different amount of games. There are also 8 other teams that won the same amount of games.
+
+### Plot 2
+
+```{r}
+# insert code here
+data_2024$ERA_group <- ifelse(
+  data_2024$ERA >= 4.20,
+  "Higher ERA",
+  "Lower ERA"
+)
+
+
+
+library("tidyverse")
+ggplot(data = data_2024, aes(x = W, y = ERA, color = ERA_group)) +
+  geom_point() +
+  labs(title = "ERA vs. Wins", x= "Wins", y = "Earned Run Average")
+
+```
+
+Question this plot answers: What result does ERA gives teams in comparison to wins?
+
+Interpretation: From this plot we can see a higher ERA typically means less overall wins for a team. The graph is displaying 2 different colors for 2 groups of ERA. The graph shows the green color for a lower era and those are bunched together towards more win, while the red color is typically showing less wins.
+
+### Plot 3
+
+```{r}
+# insert code here
+
+library(ggplot2)
+
+ggplot(data_red_sox, aes(x = yearID)) +
+  geom_line(aes(y = HR, color = "HR"), linewidth = 1) +
+  geom_line(aes(y = `3B`, color = "3B"), linewidth = 1) +
+  geom_line(aes(y = `2B`, color = "2B"), linewidth = 1) +
+  geom_line(aes(y = `SO`, color = "SO"), linewidth = 1) +
+  labs(
+    title = "Baseball Hits by Year",
+    x = "Year",
+    y = "Number",
+    color = "Statistic"
+  ) +
+  theme_minimal()
+
+
+```
+
+Question this plot answers: How has offensive production changed throughout the years?
+
+Interpretation: This graph shows that as the years have progressed every single category of offense in baseball has decreased. A main cause of this is because strikeouts took a massive leap for an increase. With less balls put in play, there is less of a chance for a hit.
+
+### Plot 4
+
+```{r}
+# insert code here
+library(ggplot2)
+
+ggplot(data_red_sox, aes(x = park, y = attendance)) +
+  geom_boxplot() +
+  labs(
+    x = "Field",
+    y = "Attendance",
+    title = "Attendance at Fenway Park"
+  ) +
+  theme_minimal()
+
+
+```
+
+Question this plot answers: How has the park attendance for Fenway changed?
+
+Interpretation: We can see that Fenway Park and Fenway Park 2 reached higher amounts of attendance. Hunington and Fenway park 1 reachde the lowest levels of attendance on average. With higher amounts of attendance for a team, this typically means a higher revenue.
+
+------------------------------------------------------------------------
+
+# Push to GitHub AND submit link on Canvas!!
+
+Assignment is due Friday 9/25 at 11:59 pm.
