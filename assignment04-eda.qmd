@@ -111,9 +111,21 @@ Use the EDA Part 3 notes as your reference. Since this is an EDA assignment, you
 
 ```{r}
 # insert code here
-ggplot(data_2024, aes (x = W)) +
-  geom_bar() +
-  labs(title = "Amount of Teams With the Same Total Wins", y = "Number of Teams", x= "WIns")
+ggplot(data_2024, aes(x = W)) +
+  geom_bar(width = 1, fill = "steelblue", color = "black") +
+  geom_text(
+    stat = "count",
+    aes(label = after_stat(count)),
+    vjust = -0.3
+  ) +
+  labs(
+    title = "Number of Teams by Total Wins",
+    x = "Total Wins",
+    y = "Number of Teams"
+  ) +
+  theme_minimal()
+##I cant make all of the bars touch because some teams do not have that total number of wins
+
 ```
 
 Question this plot answers: How may teams win the same amount of games?
@@ -124,24 +136,23 @@ Interpretation: The y axis shows the count of teams that win the same amount of 
 
 ```{r}
 # insert code here
-data_2024$ERA_group <- ifelse(
-  data_2024$ERA >= 4.20,
-  "Higher ERA",
-  "Lower ERA"
-)
+data_2024 <- data_2024 |>
+  mutate(ERA_group = case_when(
+    ERA < 3.75 ~ "Low",
+    ERA < 4.25 ~ "Mid",
+    .default = "High"),
+    ERA_group = factor(ERA_group, levels = c("Low", "Mid", "High")))
 
-
-
-library("tidyverse")
-ggplot(data = data_2024, aes(x = W, y = ERA, color = ERA_group)) +
-  geom_point() +
-  labs(title = "ERA vs. Wins", x= "Wins", y = "Earned Run Average")
+ggplot(data_2024, aes(x = W, y = ERA, color = ERA_group)) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c(Low = "forestgreen", Mid = "goldenrod", High = "firebrick")) +
+  labs(title = "ERA vs. Wins", x = "Wins", y = "Earned Run Average", color = "ERA group")
 
 ```
 
 Question this plot answers: What result does ERA gives teams in comparison to wins?
 
-Interpretation: From this plot we can see a higher ERA typically means less overall wins for a team. The graph is displaying 2 different colors for 2 groups of ERA. The graph shows the green color for a lower era and those are bunched together towards more win, while the red color is typically showing less wins.
+Interpretation: From this plot we can see a higher ERA typically means less overall wins for a team. The graph is displaying 2 different colors for 2 groups of ERA. The graph shows the green color for a lower era and those are bunched together towards more win, while the red color is typically showing less wins. The yellow dots show that teams with a mid level era typically win more games then bad ERA, but less than lower ERA. This shows that ERA is not the only piece to the puzzle in a successful team.
 
 ### Plot 3
 
